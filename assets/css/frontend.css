@@ -1,0 +1,417 @@
+/*
+ * Lokahitam Video Library — front end
+ *
+ * Design grounding: a serialised narration of the Mahabharata (and future
+ * itihasas). The palette borrows from palm-leaf manuscript paper and
+ * temple gold rather than a generic SaaS look; episodes are treated as
+ * chapters of an ongoing story, not just "videos".
+ */
+
+.lvl-app {
+	--lvl-ink: #2b2440;
+	--lvl-ink-soft: #675f7c;
+	--lvl-bg: #f6efdc;
+	--lvl-surface: #fffdf8;
+	--lvl-border: #e3d6af;
+	--lvl-gold: #b07f1f;
+	--lvl-gold-deep: #8c6516;
+	--lvl-vermilion: #a23b2e;
+
+	font-family: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	color: var(--lvl-ink);
+	background: var(--lvl-bg);
+	padding: 28px clamp(16px, 4vw, 48px) 60px;
+	border-radius: 18px;
+	max-width: 1180px;
+	margin: 0 auto;
+	line-height: 1.5;
+}
+
+.lvl-app *, .lvl-app *::before, .lvl-app *::after {
+	box-sizing: border-box;
+}
+
+.lvl-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	flex-wrap: wrap;
+	padding-bottom: 22px;
+	border-bottom: 1px solid var(--lvl-border);
+	margin-bottom: 28px;
+}
+
+.lvl-wordmark {
+	font-family: 'Fraunces', Georgia, serif;
+	font-weight: 600;
+	font-size: 28px;
+	letter-spacing: -0.01em;
+	color: var(--lvl-ink);
+}
+
+.lvl-search-wrap {
+	flex: 1 1 260px;
+	max-width: 360px;
+	margin-left: auto;
+}
+
+.lvl-search {
+	width: 100%;
+	padding: 11px 18px;
+	border-radius: 999px;
+	border: 1px solid var(--lvl-border);
+	background: var(--lvl-surface);
+	font-family: inherit;
+	font-size: 15px;
+	color: var(--lvl-ink);
+	outline: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.lvl-search:focus {
+	border-color: var(--lvl-gold);
+	box-shadow: 0 0 0 3px rgba(176, 127, 31, 0.15);
+}
+
+.lvl-crumbs {
+	display: flex;
+	align-items: baseline;
+	gap: 16px;
+	margin-bottom: 22px;
+	flex-wrap: wrap;
+}
+
+.lvl-back {
+	background: none;
+	border: none;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--lvl-gold-deep);
+	cursor: pointer;
+	padding: 4px 0;
+}
+
+.lvl-back:hover {
+	color: var(--lvl-vermilion);
+}
+
+.lvl-current-title {
+	font-family: 'Fraunces', Georgia, serif;
+	font-weight: 600;
+	font-size: 22px;
+	margin: 0;
+}
+
+.lvl-status {
+	font-size: 14px;
+	color: var(--lvl-ink-soft);
+	padding: 4px 0 18px;
+}
+
+.lvl-status:empty {
+	display: none;
+}
+
+.lvl-status-empty {
+	padding: 40px 20px;
+	text-align: center;
+	border: 1px dashed var(--lvl-border);
+	border-radius: 14px;
+	background: var(--lvl-surface);
+	display: block !important;
+}
+
+/* Series grid */
+.lvl-grid-series {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 20px;
+}
+
+.lvl-series-card {
+	background: var(--lvl-surface);
+	border: 1px solid var(--lvl-border);
+	border-radius: 16px;
+	overflow: hidden;
+	cursor: pointer;
+	text-align: left;
+	padding: 0;
+	font-family: inherit;
+	transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.lvl-series-card:hover {
+	transform: translateY(-3px);
+	border-color: var(--lvl-gold);
+}
+
+.lvl-series-cover {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	aspect-ratio: 16 / 10;
+	gap: 2px;
+	background: var(--lvl-ink);
+}
+
+.lvl-series-cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.lvl-series-body {
+	padding: 14px 16px 16px;
+}
+
+.lvl-series-name {
+	font-family: 'Fraunces', Georgia, serif;
+	font-weight: 600;
+	font-size: 18px;
+	margin: 0 0 4px;
+}
+
+.lvl-series-count {
+	font-size: 13px;
+	color: var(--lvl-ink-soft);
+}
+
+/* Video grid */
+.lvl-grid-videos {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 18px;
+}
+
+.lvl-video-card {
+	background: var(--lvl-surface);
+	border: 1px solid var(--lvl-border);
+	border-radius: 12px;
+	overflow: hidden;
+	cursor: pointer;
+	text-align: left;
+	padding: 0;
+	font-family: inherit;
+}
+
+.lvl-video-thumb {
+	position: relative;
+	aspect-ratio: 16 / 9;
+	background: var(--lvl-ink);
+}
+
+.lvl-video-thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.lvl-video-part {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	background: rgba(43, 36, 64, 0.82);
+	color: #f6efdc;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 2px 8px;
+	border-radius: 999px;
+}
+
+.lvl-video-duration {
+	position: absolute;
+	bottom: 8px;
+	right: 8px;
+	background: rgba(43, 36, 64, 0.82);
+	color: #f6efdc;
+	font-size: 12px;
+	padding: 2px 7px;
+	border-radius: 6px;
+	font-variant-numeric: tabular-nums;
+}
+
+.lvl-video-play {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.lvl-video-play svg {
+	width: 40px;
+	height: 40px;
+}
+
+.lvl-video-card:hover .lvl-video-play,
+.lvl-video-card:focus-visible .lvl-video-play {
+	opacity: 1;
+	background: rgba(43, 36, 64, 0.25);
+}
+
+.lvl-video-body {
+	padding: 10px 12px 12px;
+}
+
+.lvl-video-title {
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.35;
+	margin: 0 0 6px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.lvl-video-meta {
+	font-size: 12px;
+	color: var(--lvl-ink-soft);
+}
+
+.lvl-loadmore-wrap {
+	text-align: center;
+	margin-top: 30px;
+}
+
+.lvl-loadmore {
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	padding: 10px 26px;
+	border-radius: 999px;
+	border: 1px solid var(--lvl-gold);
+	background: transparent;
+	color: var(--lvl-gold-deep);
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.lvl-loadmore:hover {
+	background: var(--lvl-gold);
+	color: #fffdf8;
+}
+
+.lvl-loadmore:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+/* Modal */
+.lvl-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.lvl-modal-scrim {
+	position: absolute;
+	inset: 0;
+	background: rgba(20, 16, 30, 0.78);
+}
+
+.lvl-modal-panel {
+	position: relative;
+	background: var(--lvl-surface);
+	border-radius: 16px;
+	max-width: 860px;
+	width: 100%;
+	max-height: 92vh;
+	overflow-y: auto;
+	z-index: 1;
+}
+
+.lvl-modal-close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	border: none;
+	background: rgba(43, 36, 64, 0.85);
+	color: #fff;
+	font-size: 20px;
+	line-height: 1;
+	cursor: pointer;
+	z-index: 2;
+}
+
+.lvl-modal-frame {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	background: #000;
+	border-radius: 16px 16px 0 0;
+	overflow: hidden;
+}
+
+.lvl-modal-frame iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.lvl-modal-info {
+	padding: 16px 20px 20px;
+}
+
+.lvl-modal-info h3 {
+	font-family: 'Fraunces', Georgia, serif;
+	font-size: 18px;
+	margin: 0 0 8px;
+}
+
+.lvl-modal-info p {
+	font-size: 13px;
+	color: var(--lvl-ink-soft);
+	line-height: 1.6;
+	margin: 0;
+	white-space: pre-line;
+}
+
+@media (max-width: 560px) {
+	.lvl-wordmark {
+		font-size: 22px;
+	}
+
+	.lvl-grid-series,
+	.lvl-grid-videos {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+	}
+
+	.lvl-series-body {
+		padding: 10px 12px 12px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lvl-series-card,
+	.lvl-loadmore,
+	.lvl-video-play {
+		transition: none;
+	}
+}
+
+.lvl-search:focus-visible,
+.lvl-loadmore:focus-visible,
+.lvl-back:focus-visible,
+.lvl-series-card:focus-visible,
+.lvl-video-card:focus-visible,
+.lvl-modal-close:focus-visible {
+	outline: 2px solid var(--lvl-gold-deep);
+	outline-offset: 2px;
+}
